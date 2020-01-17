@@ -1,5 +1,5 @@
 ext {
-    var = './release.jks'
+    var = '/Users/86links/Workspace/new_work/pure_work/Todo-Mvp-Dagger/release.jks'
     var1 = '111111'
     var2 = 'lcp'
     var3 = '111111'
