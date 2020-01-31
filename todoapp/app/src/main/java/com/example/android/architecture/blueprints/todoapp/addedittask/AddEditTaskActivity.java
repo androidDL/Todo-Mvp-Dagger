@@ -18,22 +18,25 @@ package com.example.android.architecture.blueprints.todoapp.addedittask;
 
 import android.os.Bundle;
 
-import com.example.android.architecture.blueprints.todoapp.Injection;
-import com.example.android.architecture.blueprints.todoapp.R;
-import com.example.android.architecture.blueprints.todoapp.util.ActivityUtils;
-import com.example.android.architecture.blueprints.todoapp.util.EspressoIdlingResource;
-
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.test.espresso.IdlingResource;
+
+import com.example.android.architecture.blueprints.todoapp.R;
+import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepository;
+import com.example.android.architecture.blueprints.todoapp.util.ActivityUtils;
+import com.example.android.architecture.blueprints.todoapp.util.EspressoIdlingResource;
+
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerAppCompatActivity;
 
 /**
  * Displays an add or edit task screen.
  */
-public class AddEditTaskActivity extends AppCompatActivity {
+public class AddEditTaskActivity extends DaggerAppCompatActivity {
 
     public static final int REQUEST_ADD_TASK = 1;
 
@@ -42,6 +45,9 @@ public class AddEditTaskActivity extends AppCompatActivity {
     private AddEditTaskPresenter mAddEditTaskPresenter;
 
     private ActionBar mActionBar;
+
+    @Inject
+    TasksRepository tasksRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +92,7 @@ public class AddEditTaskActivity extends AppCompatActivity {
         // Create the presenter
         mAddEditTaskPresenter = new AddEditTaskPresenter(
                 taskId,
-                Injection.provideTasksRepository(getApplicationContext()),
+                tasksRepository,//Injection.provideTasksRepository(getApplicationContext()),
                 addEditTaskFragment,
                 shouldLoadDataFromRepo);
     }

@@ -22,7 +22,6 @@ import android.view.MenuItem;
 
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -37,9 +36,9 @@ import com.google.android.material.navigation.NavigationView;
 
 import javax.inject.Inject;
 
-import dagger.android.AndroidInjection;
+import dagger.android.support.DaggerAppCompatActivity;
 
-public class TasksActivity extends AppCompatActivity {
+public class TasksActivity extends DaggerAppCompatActivity {
 
     private static final String CURRENT_FILTERING_KEY = "CURRENT_FILTERING_KEY";
 
@@ -52,7 +51,7 @@ public class TasksActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        AndroidInjection.inject(this);
+        //AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tasks_act);
 

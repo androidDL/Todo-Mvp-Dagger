@@ -17,22 +17,27 @@
 package com.example.android.architecture.blueprints.todoapp.taskdetail;
 
 import android.os.Bundle;
-import androidx.annotation.VisibleForTesting;
-import androidx.test.espresso.IdlingResource;
+
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.android.architecture.blueprints.todoapp.Injection;
 import com.example.android.architecture.blueprints.todoapp.R;
+import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepository;
 import com.example.android.architecture.blueprints.todoapp.util.ActivityUtils;
+
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerAppCompatActivity;
 
 /**
  * Displays task details screen.
  */
-public class TaskDetailActivity extends AppCompatActivity {
+public class TaskDetailActivity extends DaggerAppCompatActivity {
 
     public static final String EXTRA_TASK_ID = "TASK_ID";
+
+    @Inject
+    TasksRepository tasksRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +68,7 @@ public class TaskDetailActivity extends AppCompatActivity {
         // Create the presenter
         new TaskDetailPresenter(
                 taskId,
-                Injection.provideTasksRepository(getApplicationContext()),
+                tasksRepository,//Injection.provideTasksRepository(getApplicationContext()),
                 taskDetailFragment);
     }
 

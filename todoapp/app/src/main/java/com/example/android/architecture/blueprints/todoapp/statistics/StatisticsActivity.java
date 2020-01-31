@@ -17,25 +17,32 @@
 package com.example.android.architecture.blueprints.todoapp.statistics;
 
 import android.os.Bundle;
-import com.google.android.material.navigation.NavigationView;
+import android.view.MenuItem;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NavUtils;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import android.view.MenuItem;
 
-import com.example.android.architecture.blueprints.todoapp.Injection;
 import com.example.android.architecture.blueprints.todoapp.R;
+import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepository;
 import com.example.android.architecture.blueprints.todoapp.util.ActivityUtils;
+import com.google.android.material.navigation.NavigationView;
+
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerAppCompatActivity;
 
 /**
  * Show statistics for tasks.
  */
-public class StatisticsActivity extends AppCompatActivity {
+public class StatisticsActivity extends DaggerAppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
+
+    @Inject
+    TasksRepository tasksRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +75,8 @@ public class StatisticsActivity extends AppCompatActivity {
         }
 
         new StatisticsPresenter(
-                Injection.provideTasksRepository(getApplicationContext()), statisticsFragment);
+                tasksRepository,//Injection.provideTasksRepository(getApplicationContext()),
+                statisticsFragment);
     }
 
     @Override

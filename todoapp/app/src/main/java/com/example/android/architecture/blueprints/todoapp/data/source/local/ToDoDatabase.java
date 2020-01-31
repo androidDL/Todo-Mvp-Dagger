@@ -17,9 +17,7 @@
 package com.example.android.architecture.blueprints.todoapp.data.source.local;
 
 import androidx.room.Database;
-import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import android.content.Context;
 
 import com.example.android.architecture.blueprints.todoapp.data.Task;
 
@@ -29,9 +27,9 @@ import com.example.android.architecture.blueprints.todoapp.data.Task;
 @Database(entities = {Task.class}, version = 1)
 public abstract class ToDoDatabase extends RoomDatabase {
 
-    private static ToDoDatabase INSTANCE;
-
     public abstract TasksDao taskDao();
+    /*private static ToDoDatabase INSTANCE;
+
 
     private static final Object sLock = new Object();
 
@@ -44,6 +42,6 @@ public abstract class ToDoDatabase extends RoomDatabase {
             }
             return INSTANCE;
         }
-    }
+    }*/
 
 }
