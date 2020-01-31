@@ -18,11 +18,14 @@ package com.example.android.architecture.blueprints.todoapp.util;
 
 import android.os.Handler;
 import android.os.Looper;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+
+import javax.inject.Inject;
 
 /**
  * Global executor pools for the whole application.
@@ -47,6 +50,7 @@ public class AppExecutors {
         this.mainThread = mainThread;
     }
 
+    @Inject
     public AppExecutors() {
         this(new DiskIOThreadExecutor(), Executors.newFixedThreadPool(THREAD_COUNT),
                 new MainThreadExecutor());

@@ -20,13 +20,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.example.android.architecture.blueprints.todoapp.Injection;
-import com.example.android.architecture.blueprints.todoapp.R;
-import com.example.android.architecture.blueprints.todoapp.statistics.StatisticsActivity;
-import com.example.android.architecture.blueprints.todoapp.util.ActivityUtils;
-import com.example.android.architecture.blueprints.todoapp.util.EspressoIdlingResource;
-import com.google.android.material.navigation.NavigationView;
-
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,6 +27,17 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.test.espresso.IdlingResource;
+
+import com.example.android.architecture.blueprints.todoapp.R;
+import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepository;
+import com.example.android.architecture.blueprints.todoapp.statistics.StatisticsActivity;
+import com.example.android.architecture.blueprints.todoapp.util.ActivityUtils;
+import com.example.android.architecture.blueprints.todoapp.util.EspressoIdlingResource;
+import com.google.android.material.navigation.NavigationView;
+
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjection;
 
 public class TasksActivity extends AppCompatActivity {
 
@@ -43,8 +47,12 @@ public class TasksActivity extends AppCompatActivity {
 
     private TasksPresenter mTasksPresenter;
 
+    @Inject
+    TasksRepository tasksRepository;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tasks_act);
 
@@ -74,7 +82,8 @@ public class TasksActivity extends AppCompatActivity {
 
         // Create the presenter
         mTasksPresenter = new TasksPresenter(
-                Injection.provideTasksRepository(getApplicationContext()), tasksFragment);
+                tasksRepository//Injection.provideTasksRepository(getApplicationContext())
+                , tasksFragment);
 
         // Load previously saved state, if available.
         if (savedInstanceState != null) {

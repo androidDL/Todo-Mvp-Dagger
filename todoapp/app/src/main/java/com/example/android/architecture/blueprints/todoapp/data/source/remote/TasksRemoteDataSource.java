@@ -17,6 +17,7 @@
 package com.example.android.architecture.blueprints.todoapp.data.source.remote;
 
 import android.os.Handler;
+
 import androidx.annotation.NonNull;
 
 import com.example.android.architecture.blueprints.todoapp.data.Task;
@@ -26,6 +27,8 @@ import com.google.common.collect.Lists;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 /**
  * Implementation of the data source that adds a latency simulating network.
@@ -52,7 +55,9 @@ public class TasksRemoteDataSource implements TasksDataSource {
     }
 
     // Prevent direct instantiation.
-    private TasksRemoteDataSource() {}
+    @Inject
+    public TasksRemoteDataSource() {
+    }
 
     private static void addTask(String title, String description) {
         Task newTask = new Task(title, description);
