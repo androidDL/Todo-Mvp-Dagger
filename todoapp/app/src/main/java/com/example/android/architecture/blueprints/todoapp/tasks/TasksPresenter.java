@@ -56,9 +56,15 @@ public class TasksPresenter implements TasksContract.Presenter {
         mTasksView.setPresenter(this);*/
     }
 
-    @Override
-    public void start() {
+
+    public void takeView(TasksContract.View view){
+        this.mTasksView=view;
         loadTasks(false);
+    }
+
+    @Override
+    public void dropView() {
+        mTasksView=null;
     }
 
     @Override

@@ -25,7 +25,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.test.espresso.IdlingResource;
 
 import com.example.android.architecture.blueprints.todoapp.R;
-import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepository;
 import com.example.android.architecture.blueprints.todoapp.util.ActivityUtils;
 import com.example.android.architecture.blueprints.todoapp.util.EspressoIdlingResource;
 
@@ -42,12 +41,16 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity {
 
     public static final String SHOULD_LOAD_DATA_FROM_REPO_KEY = "SHOULD_LOAD_DATA_FROM_REPO_KEY";
 
-    private AddEditTaskPresenter mAddEditTaskPresenter;
+    @Inject
+    AddEditTaskFragment fragment;
+
+    @Inject
+    AddEditTaskPresenter presenter;
 
     private ActionBar mActionBar;
 
-    @Inject
-    TasksRepository tasksRepository;
+    private boolean mIsDataMissing;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,36 +72,29 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity {
         setToolbarTitle(taskId);
 
         if (addEditTaskFragment == null) {
-            addEditTaskFragment = AddEditTaskFragment.newInstance();
+            addEditTaskFragment = fragment;
 
-            if (getIntent().hasExtra(AddEditTaskFragment.ARGUMENT_EDIT_TASK_ID)) {
+            /*if (getIntent().hasExtra(AddEditTaskFragment.ARGUMENT_EDIT_TASK_ID)) {
                 Bundle bundle = new Bundle();
                 bundle.putString(AddEditTaskFragment.ARGUMENT_EDIT_TASK_ID, taskId);
                 addEditTaskFragment.setArguments(bundle);
-            }
+            }*/
 
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                     addEditTaskFragment, R.id.contentFrame);
         }
+        restoreState(savedInstanceState);
+    }
 
-        boolean shouldLoadDataFromRepo = true;
-
+    private void restoreState(Bundle savedInstanceState) {
         // Prevent the presenter from loading data from the repository if this is a config change.
         if (savedInstanceState != null) {
             // Data might not have loaded when the config change happen, so we saved the state.
-            shouldLoadDataFromRepo = savedInstanceState.getBoolean(SHOULD_LOAD_DATA_FROM_REPO_KEY);
+            mIsDataMissing = savedInstanceState.getBoolean(SHOULD_LOAD_DATA_FROM_REPO_KEY);
         }
-
-        // Create the presenter
-        mAddEditTaskPresenter = new AddEditTaskPresenter(
-                taskId,
-                tasksRepository,//Injection.provideTasksRepository(getApplicationContext()),
-                addEditTaskFragment,
-                shouldLoadDataFromRepo);
     }
-
     private void setToolbarTitle(@Nullable String taskId) {
-        if(taskId == null) {
+        if (taskId == null) {
             mActionBar.setTitle(R.string.add_task);
         } else {
             mActionBar.setTitle(R.string.edit_task);
@@ -108,7 +104,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         // Save the state so that next time we know if we need to refresh data.
-        outState.putBoolean(SHOULD_LOAD_DATA_FROM_REPO_KEY, mAddEditTaskPresenter.isDataMissing());
+        outState.putBoolean(SHOULD_LOAD_DATA_FROM_REPO_KEY, presenter.isDataMissing());
         super.onSaveInstanceState(outState);
     }
 
@@ -121,5 +117,9 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity {
     @VisibleForTesting
     public IdlingResource getCountingIdlingResource() {
         return EspressoIdlingResource.getIdlingResource();
+    }
+
+    public boolean isDataMissing() {
+        return mIsDataMissing;
     }
 }

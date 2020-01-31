@@ -23,13 +23,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.example.android.architecture.blueprints.todoapp.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import javax.inject.Inject;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -40,7 +42,8 @@ public class AddEditTaskFragment extends Fragment implements AddEditTaskContract
 
     public static final String ARGUMENT_EDIT_TASK_ID = "EDIT_TASK_ID";
 
-    private AddEditTaskContract.Presenter mPresenter;
+    @Inject
+    AddEditTaskContract.Presenter mPresenter;
 
     private TextView mTitle;
 
@@ -50,6 +53,7 @@ public class AddEditTaskFragment extends Fragment implements AddEditTaskContract
         return new AddEditTaskFragment();
     }
 
+    @Inject
     public AddEditTaskFragment() {
         // Required empty public constructor
     }
@@ -57,7 +61,13 @@ public class AddEditTaskFragment extends Fragment implements AddEditTaskContract
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.start();
+        mPresenter.takeView(this);
+    }
+
+    @Override
+    public void onPause() {
+        mPresenter.dropView();
+        super.onPause();
     }
 
     @Override

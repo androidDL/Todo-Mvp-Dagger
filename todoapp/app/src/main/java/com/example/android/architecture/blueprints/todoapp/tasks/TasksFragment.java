@@ -91,7 +91,13 @@ public class TasksFragment extends DaggerFragment implements TasksContract.View 
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.start();
+        mPresenter.takeView(this);
+    }
+
+    @Override
+    public void onPause() {
+        mPresenter.dropView();
+        super.onPause();
     }
 
     @Override

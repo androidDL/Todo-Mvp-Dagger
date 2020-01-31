@@ -29,22 +29,25 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.example.android.architecture.blueprints.todoapp.R;
 import com.example.android.architecture.blueprints.todoapp.addedittask.AddEditTaskActivity;
 import com.example.android.architecture.blueprints.todoapp.addedittask.AddEditTaskFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerFragment;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Main UI for the task detail screen.
  */
-public class TaskDetailFragment extends Fragment implements TaskDetailContract.View {
+public class TaskDetailFragment extends DaggerFragment implements TaskDetailContract.View {
 
     @NonNull
     private static final String ARGUMENT_TASK_ID = "TASK_ID";
@@ -52,7 +55,11 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
     @NonNull
     private static final int REQUEST_EDIT_TASK = 1;
 
-    private TaskDetailContract.Presenter mPresenter;
+    @Inject
+    TaskDetailContract.Presenter mPresenter;
+
+    @Inject
+    String taskId;
 
     private TextView mDetailTitle;
 
@@ -60,18 +67,21 @@ public class TaskDetailFragment extends Fragment implements TaskDetailContract.V
 
     private CheckBox mDetailCompleteStatus;
 
-    public static TaskDetailFragment newInstance(@Nullable String taskId) {
-        Bundle arguments = new Bundle();
-        arguments.putString(ARGUMENT_TASK_ID, taskId);
-        TaskDetailFragment fragment = new TaskDetailFragment();
-        fragment.setArguments(arguments);
-        return fragment;
+    @Inject
+    public TaskDetailFragment() {
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.start();
+        mPresenter.takeView(this);
+    }
+
+    @Override
+    public void onPause() {
+        mPresenter.dropView();
+        super.onPause();
     }
 
     @Nullable

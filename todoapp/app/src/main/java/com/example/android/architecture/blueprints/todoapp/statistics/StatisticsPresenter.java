@@ -25,6 +25,8 @@ import com.example.android.architecture.blueprints.todoapp.util.EspressoIdlingRe
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -35,19 +37,22 @@ public class StatisticsPresenter implements StatisticsContract.Presenter {
 
     private final TasksRepository mTasksRepository;
 
-    private final StatisticsContract.View mStatisticsView;
+    private StatisticsContract.View mStatisticsView;
 
-    public StatisticsPresenter(@NonNull TasksRepository tasksRepository,
-                               @NonNull StatisticsContract.View statisticsView) {
+    @Inject
+    public StatisticsPresenter(@NonNull TasksRepository tasksRepository) {
         mTasksRepository = checkNotNull(tasksRepository, "tasksRepository cannot be null");
-        mStatisticsView = checkNotNull(statisticsView, "StatisticsView cannot be null!");
-
-        mStatisticsView.setPresenter(this);
     }
 
     @Override
-    public void start() {
+    public void takeView(StatisticsContract.View view) {
+        mStatisticsView=view;
         loadStatistics();
+    }
+
+    @Override
+    public void dropView() {
+        mStatisticsView=null;
     }
 
     private void loadStatistics() {

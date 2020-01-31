@@ -16,13 +16,15 @@
 
 package com.example.android.architecture.blueprints.todoapp.taskdetail;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.example.android.architecture.blueprints.todoapp.data.Task;
 import com.example.android.architecture.blueprints.todoapp.data.source.TasksDataSource;
 import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepository;
 import com.google.common.base.Strings;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import javax.inject.Inject;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -34,24 +36,28 @@ public class TaskDetailPresenter implements TaskDetailContract.Presenter {
 
     private final TasksRepository mTasksRepository;
 
-    private final TaskDetailContract.View mTaskDetailView;
+    private TaskDetailContract.View mTaskDetailView;
 
     @Nullable
     private String mTaskId;
 
+    @Inject
     public TaskDetailPresenter(@Nullable String taskId,
-                               @NonNull TasksRepository tasksRepository,
-                               @NonNull TaskDetailContract.View taskDetailView) {
+                               @NonNull TasksRepository tasksRepository) {
         mTaskId = taskId;
         mTasksRepository = checkNotNull(tasksRepository, "tasksRepository cannot be null!");
-        mTaskDetailView = checkNotNull(taskDetailView, "taskDetailView cannot be null!");
 
-        mTaskDetailView.setPresenter(this);
     }
 
     @Override
-    public void start() {
+    public void takeView(TaskDetailContract.View view) {
+        mTaskDetailView = view;
         openTask();
+    }
+
+    @Override
+    public void dropView() {
+        mTaskDetailView = null;
     }
 
     private void openTask() {

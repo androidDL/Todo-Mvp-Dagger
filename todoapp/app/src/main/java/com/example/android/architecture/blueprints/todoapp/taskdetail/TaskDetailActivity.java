@@ -22,7 +22,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.android.architecture.blueprints.todoapp.R;
-import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepository;
 import com.example.android.architecture.blueprints.todoapp.util.ActivityUtils;
 
 import javax.inject.Inject;
@@ -37,7 +36,7 @@ public class TaskDetailActivity extends DaggerAppCompatActivity {
     public static final String EXTRA_TASK_ID = "TASK_ID";
 
     @Inject
-    TasksRepository tasksRepository;
+    TaskDetailFragment injectDetailFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,23 +52,17 @@ public class TaskDetailActivity extends DaggerAppCompatActivity {
         ab.setDisplayShowHomeEnabled(true);
 
         // Get the requested task id
-        String taskId = getIntent().getStringExtra(EXTRA_TASK_ID);
 
         TaskDetailFragment taskDetailFragment = (TaskDetailFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.contentFrame);
 
         if (taskDetailFragment == null) {
-            taskDetailFragment = TaskDetailFragment.newInstance(taskId);
+            taskDetailFragment = injectDetailFragment;
 
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                     taskDetailFragment, R.id.contentFrame);
         }
 
-        // Create the presenter
-        new TaskDetailPresenter(
-                taskId,
-                tasksRepository,//Injection.provideTasksRepository(getApplicationContext()),
-                taskDetailFragment);
     }
 
     @Override

@@ -26,12 +26,12 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.android.architecture.blueprints.todoapp.R;
-import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepository;
 import com.example.android.architecture.blueprints.todoapp.util.ActivityUtils;
 import com.google.android.material.navigation.NavigationView;
 
 import javax.inject.Inject;
 
+import dagger.Lazy;
 import dagger.android.support.DaggerAppCompatActivity;
 
 /**
@@ -42,7 +42,7 @@ public class StatisticsActivity extends DaggerAppCompatActivity {
     private DrawerLayout mDrawerLayout;
 
     @Inject
-    TasksRepository tasksRepository;
+    Lazy<StatisticsFragment> statisticsFragmentProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,14 +69,10 @@ public class StatisticsActivity extends DaggerAppCompatActivity {
         StatisticsFragment statisticsFragment = (StatisticsFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.contentFrame);
         if (statisticsFragment == null) {
-            statisticsFragment = StatisticsFragment.newInstance();
+            statisticsFragment = statisticsFragmentProvider.get();
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                     statisticsFragment, R.id.contentFrame);
         }
-
-        new StatisticsPresenter(
-                tasksRepository,//Injection.provideTasksRepository(getApplicationContext()),
-                statisticsFragment);
     }
 
     @Override

@@ -16,11 +16,14 @@
 
 package com.example.android.architecture.blueprints.todoapp.addedittask;
 
-import com.example.android.architecture.blueprints.todoapp.data.Task;
-import com.example.android.architecture.blueprints.todoapp.data.source.TasksDataSource;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.example.android.architecture.blueprints.todoapp.data.Task;
+import com.example.android.architecture.blueprints.todoapp.data.source.TasksDataSource;
+import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepository;
+
+import javax.inject.Inject;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -34,8 +37,7 @@ public class AddEditTaskPresenter implements AddEditTaskContract.Presenter,
     @NonNull
     private final TasksDataSource mTasksRepository;
 
-    @NonNull
-    private final AddEditTaskContract.View mAddTaskView;
+    private AddEditTaskContract.View mAddTaskView;
 
     @Nullable
     private String mTaskId;
@@ -45,26 +47,32 @@ public class AddEditTaskPresenter implements AddEditTaskContract.Presenter,
     /**
      * Creates a presenter for the add/edit view.
      *
-     * @param taskId ID of the task to edit or null for a new task
-     * @param tasksRepository a repository of data for tasks
-     * @param addTaskView the add/edit view
+     * @param taskId                 ID of the task to edit or null for a new task
+     * @param tasksRepository        a repository of data for tasks
+     * @param addTaskView            the add/edit view
      * @param shouldLoadDataFromRepo whether data needs to be loaded or not (for config changes)
      */
-    public AddEditTaskPresenter(@Nullable String taskId, @NonNull TasksDataSource tasksRepository,
-            @NonNull AddEditTaskContract.View addTaskView, boolean shouldLoadDataFromRepo) {
+    @Inject
+    public AddEditTaskPresenter(@Nullable String taskId, @NonNull TasksRepository tasksRepository, boolean shouldLoadDataFromRepo) {
         mTaskId = taskId;
         mTasksRepository = checkNotNull(tasksRepository);
-        mAddTaskView = checkNotNull(addTaskView);
+        //mAddTaskView = checkNotNull(addTaskView);
         mIsDataMissing = shouldLoadDataFromRepo;
 
-        mAddTaskView.setPresenter(this);
+        //mAddTaskView.setPresenter(this);
     }
 
     @Override
-    public void start() {
+    public void takeView(AddEditTaskContract.View view) {
+        mAddTaskView = view;
         if (!isNewTask() && mIsDataMissing) {
             populateTask();
         }
+    }
+
+    @Override
+    public void dropView() {
+        mAddTaskView = null;
     }
 
     @Override

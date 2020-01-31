@@ -17,29 +17,37 @@
 package com.example.android.architecture.blueprints.todoapp.statistics;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.example.android.architecture.blueprints.todoapp.R;
+import com.example.android.architecture.blueprints.todoapp.di.scope.ActivityScope;
+
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerFragment;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Main UI for the statistics screen.
  */
-public class StatisticsFragment extends Fragment implements StatisticsContract.View {
+@ActivityScope
+public class StatisticsFragment extends DaggerFragment implements StatisticsContract.View {
 
     private TextView mStatisticsTV;
 
-    private StatisticsContract.Presenter mPresenter;
+    @Inject
+    StatisticsContract.Presenter mPresenter;
 
-    public static StatisticsFragment newInstance() {
-        return new StatisticsFragment();
+    @Inject
+    public StatisticsFragment() {
+
     }
 
     @Override
@@ -59,7 +67,13 @@ public class StatisticsFragment extends Fragment implements StatisticsContract.V
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.start();
+        mPresenter.takeView(this);
+    }
+
+    @Override
+    public void onPause() {
+        mPresenter.dropView();
+        super.onPause();
     }
 
     @Override
