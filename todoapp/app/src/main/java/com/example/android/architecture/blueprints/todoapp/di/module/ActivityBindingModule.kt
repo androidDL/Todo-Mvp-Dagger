@@ -5,12 +5,13 @@ import com.example.android.architecture.blueprints.todoapp.di.scope.ActivityScop
 import com.example.android.architecture.blueprints.todoapp.statistics.StatisticsActivity
 import com.example.android.architecture.blueprints.todoapp.taskdetail.TaskDetailActivity
 import com.example.android.architecture.blueprints.todoapp.tasks.TasksActivity
+import com.example.android.architecture.blueprints.todoapp.tasks.TasksModule
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
 @Module
 abstract class ActivityBindingModule {
-    @ContributesAndroidInjector
+    @ContributesAndroidInjector(modules = [TasksModule::class])
     @ActivityScope
     abstract fun contributeTasksActivity():TasksActivity
 

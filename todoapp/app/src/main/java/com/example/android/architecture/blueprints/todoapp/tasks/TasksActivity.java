@@ -28,7 +28,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.test.espresso.IdlingResource;
 
 import com.example.android.architecture.blueprints.todoapp.R;
-import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepository;
 import com.example.android.architecture.blueprints.todoapp.statistics.StatisticsActivity;
 import com.example.android.architecture.blueprints.todoapp.util.ActivityUtils;
 import com.example.android.architecture.blueprints.todoapp.util.EspressoIdlingResource;
@@ -36,6 +35,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import javax.inject.Inject;
 
+import dagger.Lazy;
 import dagger.android.support.DaggerAppCompatActivity;
 
 public class TasksActivity extends DaggerAppCompatActivity {
@@ -44,10 +44,11 @@ public class TasksActivity extends DaggerAppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
 
-    private TasksPresenter mTasksPresenter;
+    @Inject
+    TasksPresenter mTasksPresenter;
 
     @Inject
-    TasksRepository tasksRepository;
+    Lazy<TasksFragment> tasksFragmentProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,15 +75,15 @@ public class TasksActivity extends DaggerAppCompatActivity {
                 (TasksFragment) getSupportFragmentManager().findFragmentById(R.id.contentFrame);
         if (tasksFragment == null) {
             // Create the fragment
-            tasksFragment = TasksFragment.newInstance();
+            tasksFragment = tasksFragmentProvider.get();
             ActivityUtils.addFragmentToActivity(
                     getSupportFragmentManager(), tasksFragment, R.id.contentFrame);
         }
 
         // Create the presenter
-        mTasksPresenter = new TasksPresenter(
+        /*mTasksPresenter = new TasksPresenter(
                 tasksRepository//Injection.provideTasksRepository(getApplicationContext())
-                , tasksFragment);
+                , tasksFragment);*/
 
         // Load previously saved state, if available.
         if (savedInstanceState != null) {
